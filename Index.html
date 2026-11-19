@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS AI</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: radial-gradient(circle, #063b70, #000814);
+    color: #00d9ff;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+h1 {
+    font-size: 42px;
+    letter-spacing: 5px;
+    text-shadow: 0 0 20px #00d9ff;
+}
+
+.subtitle {
+    margin-top: 15px;
+    letter-spacing: 3px;
+    color: #8cecff;
+}
+
+.voice-button {
+    width: 155px;
+    height: 155px;
+    margin-top: 65px;
+    border-radius: 50%;
+    border: 3px solid #00d9ff;
+    background: transparent;
+    color: white;
+    font-size: 55px;
+    box-shadow: 0 0 25px #00d9ff,
+                inset 0 0 25px #008cff;
+    cursor: pointer;
+}
+
+.voice-button:active {
+    transform: scale(0.94);
+    background: #0066aa;
+}
+
+#status {
+    margin-top: 35px;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.footer {
+    position: absolute;
+    bottom: 25px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: #00d9ff;
+}
+</style>
+</head>
+
+<body>
+
+<h1>J.A.R.V.I.S</h1>
+
+<p class="subtitle">PERSONAL AI ASSISTANT</p>
+
+<button class="voice-button" onclick="startJarvis()">
+🎙️
+</button>
+
+<p id="status">TAP TO SPEAK</p>
+
+<div class="footer">
+    SYSTEM ONLINE
+</div>
+
+<script>
+function speak(message) {
+    const speech = new SpeechSynthesisUtterance(message);
+    speech.lang = "en-US";
+    speech.rate = 1;
+    speech.pitch = 0.9;
+    window.speechSynthesis.speak(speech);
+}
+
+function startJarvis() {
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        document.getElementById("status").innerText =
+            "Speech recognition not supported";
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+
+    document.getElementById("status").innerText =
+        "LISTENING...";
+
+    recognition.onresult = function(event) {
+        const command =
+            event.results[0][0].transcript.toLowerCase();
+
+        document.getElementById("status").innerText =
+            "YOU: " + command;
+
+        if (command.includes("hello")) {
+            speak("Hello! I am Jarvis. How can I help you?");
+        }
+        else if (command.includes("your name")) {
+            speak("My name is Jarvis. Your personal assistant.");
+        }
+        else if (command.includes("time")) {
+            speak("The time is " +
+                new Date().toLocaleTimeString());
+        }
+        else {
+            speak("I heard you. How can I help you?");
+        }
+    };
+
+    recognition.onerror = function() {
+        document.getElementById("status").innerText =
+            "PLEASE TRY AGAIN";
+    };
+
+    recognition.onend = function() {
+        document.getElementById("status").innerText =
+            "TAP TO SPEAK";
+    };
+
+    recognition.start();
+}
+</script>
+
+</body>
+</html>
